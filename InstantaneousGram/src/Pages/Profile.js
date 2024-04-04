@@ -10,19 +10,23 @@ import Card from 'react-bootstrap/esm/Card.js';
 import Col from 'react-bootstrap/esm/Col.js';
 import Row from 'react-bootstrap/esm/Row.js';
 import SideBar from '../components/SideBar.js';
+
 import '../Styling/Styling.scss';
 
 
-function Home() {
+
+function Profile() {
   return (
 
-      <Container fluid>
+      <Container fluid className="vh-100">
           <SideBar />
-          <Row>
+       
+          <Navbar />
+          <Row className="h-100"> 
               <Col>
                 EXTRA
               </Col>
-              <Col className="PostFeed">
+              <Col xs={12} md={4} className="PostFeed h-100">
                 POSTS
               </Col>
               <Col>
@@ -35,4 +39,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Profile;
