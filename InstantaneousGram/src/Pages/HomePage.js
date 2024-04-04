@@ -4,24 +4,34 @@ import Navbar from '../components/Navbar.js';
 import LoginButton from '../components/Login.js';
 import LogoutButton from '../components/LogOut.js';
 import UserProfileButton from '../components/UserProfile.js'
+import Button from 'react-bootstrap/esm/Button.js';
+import Container from 'react-bootstrap/esm/Container.js';
+import Card from 'react-bootstrap/esm/Card.js';
+import Col from 'react-bootstrap/esm/Col.js';
+import Row from 'react-bootstrap/esm/Row.js';
+import SideBar from '../components/SideBar.js';
+import '../Styling/Styling.scss';
+
 
 function Home() {
   return (
-    
-    <div className="container mt-5">
-        
-      <h1 className="display-4">Welcome to My Website</h1>
-      <Navbar />
-      <LoginButton />
-      <br />
-      <LogoutButton />
-      <br />
-      <UserProfileButton />
-      <p className="lead">This is a simple homepage built with React.</p>
-      <p className="lead">Feel free to explore!</p>
-      <Link to="/about" className="btn btn-primary">About Us</Link>
-      
-    </div>
+
+      <Container fluid>
+          <SideBar />
+          <Row>
+              <Col>
+                EXTRA
+              </Col>
+              <Col className="PostFeed">
+                POSTS
+              </Col>
+              <Col>
+              EXTRA
+              </Col>
+          </Row>
+      </Container>
+
+
   );
 }
 
