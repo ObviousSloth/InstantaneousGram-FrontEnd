@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar.js';
 import LoginButton from '../components/Login.js';
 import LogoutButton from '../components/LogOut.js';
-import UserProfileButton from '../components/UserProfile.js';
+import UserProfileButton from '../components/UserProfile.js'
 
 function Home() {
   return (
