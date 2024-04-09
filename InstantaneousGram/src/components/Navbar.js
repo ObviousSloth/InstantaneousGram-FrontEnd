@@ -30,7 +30,7 @@ function NavBar() {
             <Nav.Link href="/Profile">Profile</Nav.Link>
             <Nav.Link href="/Likes">Likes</Nav.Link>
             <NavDropdown title="Account" id="navbarScrollingDropdown">
-              <NavDropdown.Item onClick={loginUser}>Login</NavDropdown.Item>
+              <NavDropdown.Item onClick={loginUser}>Login/SignUp</NavDropdown.Item>
               <NavDropdown.Item onClick={logoutUser}>
                 Logout
               </NavDropdown.Item>

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar.js';
 import LoginButton from '../components/Login.js';
 import LogoutButton from '../components/LogOut.js';
-import UserProfileButton from '../components/UserProfile.js'
+import UserProfile from '../components/UserProfile.js'
 import Button from 'react-bootstrap/esm/Button.js';
 import Container from 'react-bootstrap/esm/Container.js';
 import Card from 'react-bootstrap/esm/Card.js';
@@ -30,7 +30,7 @@ function Profile() {
                 POSTS
               </Col>
               <Col>
-              EXTRA
+              <UserProfile/>
               </Col>
           </Row>
       </Container>
