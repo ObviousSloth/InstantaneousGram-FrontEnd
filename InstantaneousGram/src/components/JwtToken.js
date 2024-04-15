@@ -10,12 +10,14 @@ function getToken() {
     fetch('http://localhost:4999/api/Values', {
       headers: {
         'Authorization': `Bearer ${token}`
+        
       }
     })
     .then(response => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      console.log('Bearer:' + token);
       return response.json();
     })
     .then(data => {
