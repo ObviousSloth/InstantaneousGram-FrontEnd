@@ -7,18 +7,34 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useLogout } from './LogOut';
 import { useLogIn } from './Login';
 import InputGroup from 'react-bootstrap/InputGroup';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { checkUserExists } from '../API/Users/ApiUserHandling';
+import { useAuth0 } from '@auth0/auth0-react';
+
 
 function NavBar() {
   const logoutUser = useLogout();
   const loginUser = useLogIn();
+  const [userExists, setUserExists] = useState(false);
+  const { isAuthenticated } = useAuth0();
+
+  useEffect(() => {
+   
+      try {
+        setUserExists(isAuthenticated);
+      } catch (error) {
+        console.error('Error checking user:', error);
+      };
+    
+
+  },);
 
   return (
     
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container fluid style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Navbar.Brand href="#">InstantaneousGram</Navbar.Brand>
+        <Navbar.Brand href="/">InstantaneousGram</Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll" >
           <Nav
@@ -30,10 +46,16 @@ function NavBar() {
             <Nav.Link href="/Profile">Profile</Nav.Link>
             <Nav.Link href="/Likes">Likes</Nav.Link>
             <NavDropdown title="Account" id="navbarScrollingDropdown">
-              <NavDropdown.Item onClick={loginUser}>Login/SignUp</NavDropdown.Item>
-              <NavDropdown.Item onClick={logoutUser}>
-                Logout
-              </NavDropdown.Item>
+            {userExists ? (
+                // Render logout option if the user exists
+                <NavDropdown.Item onClick={logoutUser}>Logout</NavDropdown.Item>
+              ) : (
+                // Render login or registration option if the user doesn't exist
+                <>
+                  <NavDropdown.Item onClick={loginUser}>Login</NavDropdown.Item>
+                  <NavDropdown.Item href="/register">Register</NavDropdown.Item>
+                </>
+              )}
               <NavDropdown.Divider />
               
               <NavDropdown.Item >
