@@ -1,2 +1,2 @@
 # InstantaneousGram-FrontEnd
-[![Netlify Status](https://api.netlify.com/api/v1/badges/d7755638-2d71-446a-8d1c-2c0b3b39977f/deploy-status)](https://app.netlify.com/sites/instantaneousgram/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/9b2c3e75-0217-4940-8427-76e9abe57e71/deploy-status)](https://app.netlify.com/sites/instantaneousgram/deploys)
