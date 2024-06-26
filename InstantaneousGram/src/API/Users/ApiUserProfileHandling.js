@@ -1,20 +1,24 @@
-// src/services/apiService.js
 import axios from 'axios';
 
 const BASE_URL = process.env.REACT_APP_BACKEND_DOCKER_URL || 'http://localhost:5500';
-const AUTH0_DOMAIN = process.env.REACT_APP_AUTH0_DOMAIN; // Add your Auth0 domain here
-const AUTH0_MANAGEMENT_API_TOKEN = process.env.REACT_APP_AUTH0_MANAGEMENT_API_TOKEN; // Add your Auth0 Management API token here
+const AUTH0_DOMAIN = process.env.REACT_APP_AUTH0_DOMAIN;
+const AUTH0_MANAGEMENT_API_TOKEN = process.env.REACT_APP_AUTH0_MANAGEMENT_API_TOKEN;
 
 const apiClient = axios.create({
-  baseURL: `${BASE_URL}0/userprofile/api`, // Adjust the base URL as per your setup
+  baseURL: `${BASE_URL}0/userprofile/api`,
 });
 
 apiClient.defaults.headers.post['Content-Type'] = 'application/json';
 apiClient.defaults.headers.put['Content-Type'] = 'application/json';
 
-export const getUserProfileByAuthId = async (authId) => {
+export const getUserProfileByAuthId = async (authId, token) => {
   try {
-    const response = await apiClient.get(`/Profile/auth/${authId}`);
+    console.log('Token used for request:', token);
+    const response = await apiClient.get(`/Profile/auth/${authId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error('Error fetching user profile by Auth ID', error);
@@ -22,17 +26,18 @@ export const getUserProfileByAuthId = async (authId) => {
   }
 };
 
-export const updateUserProfile = async (authId, userProfile) => {
+export const updateUserProfile = async (authId, userProfile, token) => {
   try {
     console.log(`Updating user profile for Auth ID: ${authId} with data:`, userProfile);
-    // First, update the user profile in your application
-    await apiClient.put(`/Profile/auth/${authId}`, userProfile);
+    await apiClient.put(`/Profile/auth/${authId}`, userProfile, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     console.log('User profile updated in the application successfully.');
 
-    // Check and log the AUTH0_MANAGEMENT_API_TOKEN to ensure it is correctly set
     console.log(`AUTH0_MANAGEMENT_API_TOKEN: ${AUTH0_MANAGEMENT_API_TOKEN}`);
 
-    // Update Auth0 user profile email separately
     if (userProfile.email) {
       console.log(`Updating Auth0 email for user ${authId} to ${userProfile.email}`);
       try {
@@ -53,7 +58,6 @@ export const updateUserProfile = async (authId, userProfile) => {
       }
     }
 
-    // Update Auth0 user profile username separately
     if (userProfile.username) {
       console.log(`Updating Auth0 username for user ${authId} to ${userProfile.username}`);
       try {
@@ -80,9 +84,13 @@ export const updateUserProfile = async (authId, userProfile) => {
   }
 };
 
-export const deleteUserProfile = async (id) => {
+export const deleteUserProfile = async (id, token) => {
   try {
-    await apiClient.delete(`/Profile/${id}`);
+    await apiClient.delete(`/Profile/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     console.log('User profile deleted successfully.');
   } catch (error) {
     console.error('Error deleting user profile', error);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar.js';
 import LoginButton from '../components/Login.js';
@@ -11,10 +11,9 @@ import Col from 'react-bootstrap/esm/Col.js';
 import Row from 'react-bootstrap/esm/Row.js';
 import SideBar from '../components/SideBar.js';
 import FileUploadForm from '../components/FileUploadForm.js';
-import { useState } from 'react';
+import PostList from '../components/PostList.js';
 
 import '../Styling/Styling.scss';
-
 
 const Home = () => {
   const [showForm, setShowForm] = useState(false);
@@ -22,29 +21,23 @@ const Home = () => {
   const handleButtonClick = () => {
     setShowForm(!showForm); // Toggle the state
   };
+
   return (
-
-      <Container fluid className="vh-100">
-          <SideBar />
-       
-          <Navbar />
-          <Row className="h-100"> 
-              <Col>
-                EXTRA
-              </Col>
-              <Col xs={12} md={4} className="PostFeed h-100">
-                POSTS
-                <br />
-                <Button onClick={handleButtonClick}>Toggle Form</Button>
-                {showForm && <FileUploadForm />}
-              </Col>
-              <Col>
-              EXTRA
-              </Col>
-          </Row>
-      </Container>
-
-
+    <Container fluid className="vh-100">
+      <SideBar />
+      <Navbar />
+      <Row className="h-100">
+        <Col>
+          EXTRA
+        </Col>
+        <Col xs={12} md={4} className="PostFeed h-100">
+          <PostList />
+        </Col>
+        <Col>
+          EXTRA
+        </Col>
+      </Row>
+    </Container>
   );
 }
 
