@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-const BASE_URL = process.env.REACT_APP_BACKEND_DOCKER_URL || 'http://localhost:5500';
+const BASE_URL = process.env.REACT_APP_BACKEND_URL;
 const AUTH0_DOMAIN = process.env.REACT_APP_AUTH0_DOMAIN;
 const AUTH0_MANAGEMENT_API_TOKEN = process.env.REACT_APP_AUTH0_MANAGEMENT_API_TOKEN;
 
 const apiClient = axios.create({
-  baseURL: `${BASE_URL}0/userprofile/api`,
+  baseURL: `${BASE_URL}/userprofile/api`,
 });
 
 apiClient.defaults.headers.post['Content-Type'] = 'application/json';
@@ -21,7 +21,7 @@ export const getUserProfileByAuthId = async (authId, token) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching user profile by Auth ID', error);
+    console.error('Error fetching user profile by Auth ID', error.response ? error.response.data : error.message);
     throw error;
   }
 };
@@ -53,7 +53,7 @@ export const updateUserProfile = async (authId, userProfile, token) => {
         );
         console.log('Auth0 email updated successfully.');
       } catch (auth0Error) {
-        console.error('Error updating Auth0 email:', auth0Error.response?.data || auth0Error.message);
+        console.error('Error updating Auth0 email:', auth0Error.response ? auth0Error.response.data : auth0Error.message);
         throw auth0Error;
       }
     }
@@ -73,13 +73,13 @@ export const updateUserProfile = async (authId, userProfile, token) => {
         );
         console.log('Auth0 username updated successfully.');
       } catch (auth0Error) {
-        console.error('Error updating Auth0 username:', auth0Error.response?.data || auth0Error.message);
+        console.error('Error updating Auth0 username:', auth0Error.response ? auth0Error.response.data : auth0Error.message);
         throw auth0Error;
       }
     }
 
   } catch (error) {
-    console.error('Error updating user profile', error);
+    console.error('Error updating user profile', error.response ? error.response.data : error.message);
     throw error;
   }
 };
@@ -93,7 +93,7 @@ export const deleteUserProfile = async (id, token) => {
     });
     console.log('User profile deleted successfully.');
   } catch (error) {
-    console.error('Error deleting user profile', error);
+    console.error('Error deleting user profile', error.response ? error.response.data : error.message);
     throw error;
   }
 };

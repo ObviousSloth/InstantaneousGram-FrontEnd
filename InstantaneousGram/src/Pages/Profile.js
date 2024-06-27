@@ -3,7 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { getUserProfileByAuthId, updateUserProfile, deleteUserProfile } from '../API/Users/ApiUserProfileHandling.js';
 import Navbar from '../components/Navbar.js';
 import SideBar from '../components/SideBar.js';
-import { Container, Row, Col, Button, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Button, Modal, Form } from 'react-bootstrap';
 import '../Styling/Styling.scss';
 import '../Styling/Style.css';
 import PostMediaFlow from '../components/PostMediaFlow';
@@ -60,7 +60,6 @@ const ProfilePage = () => {
     try {
       const token = await getAccessTokenSilently();
       const updatedUserProfile = {
-        userID: 0,
         auth0Id: user.sub,
         bio: newBio || bio,
         username: newUsername || username,
@@ -92,11 +91,11 @@ const ProfilePage = () => {
     try {
       const token = await getAccessTokenSilently();
       const userProfile = await getUserProfileByAuthId(user.sub, token);
-      if (userProfile && userProfile.userID) {
-        await deleteUserProfile(userProfile.userID, token);
+      if (userProfile && userProfile.auth0Id) {
+        await deleteUserProfile(userProfile.auth0Id, token);
         console.log('User deleted successfully.');
       } else {
-        console.error('User profile not found or missing userID.');
+        console.error('User profile not found or missing Auth0Id.');
       }
     } catch (error) {
       console.error('Error deleting user profile:', error);
@@ -142,29 +141,32 @@ const ProfilePage = () => {
           <Modal.Title>Edit Profile</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <label htmlFor="newBio">New Bio:</label>
-          <input
-            type="text"
-            id="newBio"
-            value={newBio}
-            onChange={(e) => setNewBio(e.target.value)}
-          />
-          <br />
-          <label htmlFor="newUsername">New Username:</label>
-          <input
-            type="text"
-            id="newUsername"
-            value={newUsername}
-            onChange={(e) => setNewUsername(e.target.value)}
-          />
-          <br />
-          <label htmlFor="newEmail">New Email:</label>
-          <input
-            type="email"
-            id="newEmail"
-            value={newEmail}
-            onChange={(e) => setNewEmail(e.target.value)}
-          />
+          <Form>
+            <Form.Group controlId="newBio">
+              <Form.Label>New Bio:</Form.Label>
+              <Form.Control
+                type="text"
+                value={newBio}
+                onChange={(e) => setNewBio(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group controlId="newUsername">
+              <Form.Label>New Username:</Form.Label>
+              <Form.Control
+                type="text"
+                value={newUsername}
+                onChange={(e) => setNewUsername(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group controlId="newEmail">
+              <Form.Label>New Email:</Form.Label>
+              <Form.Control
+                type="email"
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>

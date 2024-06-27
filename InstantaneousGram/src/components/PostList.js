@@ -34,7 +34,7 @@ const PostList = () => {
       {posts.map((post) => (
         <ListGroupItem key={post.postID}>
           <h5>{post.caption}</h5>
-          <p>Posted by User ID: {post.userID}</p>
+          <p>Posted by User ID: {post.auth0Id}</p>
           {post.mediaURL && (
             <img src={post.mediaURL} alt="Post media" style={{ width: '100%' }} />
           )}

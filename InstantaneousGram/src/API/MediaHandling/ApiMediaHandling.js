@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const BASE_URL = process.env.REACT_APP_BACKEND_DOCKER_URL; // Replace with your backend API URL
+const BASE_URL = process.env.REACT_APP_BACKEND_URL; // Replace with your backend API URL
 
 const apiClient = axios.create({
-  baseURL: `${BASE_URL}2/imageandvideoprocessing/api`,
+  baseURL: `${BASE_URL}/imageandvideoprocessing/api`,
 });
 
 export const uploadImage = async (file, userId, token) => {

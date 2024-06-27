@@ -1,7 +1,7 @@
 
 // api.js
 
-const BASE_URL = process.env.REACT_APP_BACKEND_DOCKER_URL;
+const BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
 async function getUsers() {
   const response = await fetch(`${BASE_URL}/api/Users`);
@@ -78,7 +78,7 @@ async function deleteUser(id) {
 async function checkUserExists(auth0Id) {
     try {
       // Make an API call to check if the user exists in the database
-      const response = await fetch(`${BASE_URL}0/api/users/check/${auth0Id}`);
+      const response = await fetch(`${BASE_URL}/api/users/check/${auth0Id}`);
       if (response.ok) {
         return true; // User exists
       } else {

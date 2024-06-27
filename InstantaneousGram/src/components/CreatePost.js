@@ -20,7 +20,7 @@ const CreatePost = ({ mediaId }) => {
 
       const postData = {
         postID: 0, // Backend auto-increments this field
-        userID: user.sub, // Send the user ID as a string
+        auth0Id: user.sub, // Send the user ID as a string
         mediaID: mediaId, // Use the media ID as a string
         caption: caption,
         createdAt: new Date().toISOString(),
