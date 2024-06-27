@@ -1,34 +1,49 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar.js';
-import LoginButton from '../components/Login.js';
-import LogoutButton from '../components/LogOut.js';
-import UserProfile from '../components/UserProfile.js'
-import Button from 'react-bootstrap/esm/Button.js';
-import Container from 'react-bootstrap/esm/Container.js';
-import Card from 'react-bootstrap/esm/Card.js';
-import Col from 'react-bootstrap/esm/Col.js';
-import Row from 'react-bootstrap/esm/Row.js';
-import SideBar from '../components/SideBar.js';
-import {getUsers, getUserByAuthId} from '../API/Users/ApiUserHandling.js';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import Modal from 'react-bootstrap/Modal';
-import { updateUserBio } from '../API/Users/ApiUserHandling.js';
+import { getUserProfileByAuthId, updateUserProfile, deleteUserProfile } from '../API/Users/ApiUserProfileHandling.js';
+import Navbar from '../components/Navbar.js';
+import SideBar from '../components/SideBar.js';
+import { Container, Row, Col, Button, Modal, Form } from 'react-bootstrap';
 import '../Styling/Styling.scss';
 import '../Styling/Style.css';
+import PostMediaFlow from '../components/PostMediaFlow';
 
-
-
-function Profile() {
- // const [users, setUsers] = useState([]);
+const ProfilePage = () => {
+  const { isAuthenticated, user, isLoading, getAccessTokenSilently } = useAuth0();
   const [bio, setBio] = useState('');
-  const { isAuthenticated, user } = useAuth0();
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [profilePictureURL, setProfilePictureURL] = useState('');
+  const [createdAt, setCreatedAt] = useState('');
+  const [updatedAt, setUpdatedAt] = useState('');
+  const [userData, setUserData] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [newBio, setNewBio] = useState('');
   const [newUsername, setNewUsername] = useState('');
-  const [userData, setUserData] = useState(null);
+  const [newEmail, setNewEmail] = useState('');
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const fetchUser = async () => {
+        try {
+          const token = await getAccessTokenSilently();
+          console.log('Access Token:', token);
+          const userProfile = await getUserProfileByAuthId(user.sub, token);
+          console.log(userProfile);
+          setBio(userProfile.bio);
+          setUsername(userProfile.username);
+          setEmail(userProfile.email);
+          setProfilePictureURL(userProfile.profilePictureURL);
+          setCreatedAt(userProfile.createdAt);
+          setUpdatedAt(userProfile.updatedAt);
+          setUserData(userProfile.profilePictureURL);
+        } catch (error) {
+          console.error('Error fetching user profile:', error);
+        }
+      };
+      fetchUser();
+    }
+  }, [isAuthenticated, user, getAccessTokenSilently]);
 
   const handleEditProfile = () => {
     setShowModal(true);
@@ -36,40 +51,60 @@ function Profile() {
 
   const handleCloseModal = () => {
     setShowModal(false);
-    // Reset the input fields when modal is closed
     setNewBio('');
     setNewUsername('');
+    setNewEmail('');
   };
 
   const handleSaveChanges = async () => {
     try {
-      // Update the user's bio and username
-      await updateUserBio(user.sub, { id:0, bio: newBio, username: newUsername, profile_Picture: 's'});
-      console.log('User updated successfully.');
-    } catch (error) {
-      console.error('Error updating user:', error);
-    }
+      const token = await getAccessTokenSilently();
+      const updatedUserProfile = {
+        auth0Id: user.sub,
+        bio: newBio || bio,
+        username: newUsername || username,
+        email: newEmail || email,
+        profilePictureURL: profilePictureURL,
+        createdAt: createdAt,
+        updatedAt: new Date().toISOString(),
+      };
 
-    // Close the modal
-    handleCloseModal();
+      await updateUserProfile(user.sub, updatedUserProfile, token);
+      console.log('User updated successfully.');
+
+      const userProfile = await getUserProfileByAuthId(user.sub, token);
+      setBio(userProfile.bio);
+      setUsername(userProfile.username);
+      setEmail(userProfile.email);
+      setProfilePictureURL(userProfile.profilePictureURL);
+      setCreatedAt(userProfile.createdAt);
+      setUpdatedAt(userProfile.updatedAt);
+      setUserData(userProfile.profilePictureURL);
+
+      handleCloseModal();
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+    }
   };
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      const fetchUser = async () => {
-        try {
-          const User = await getUserByAuthId(user.sub); // Pass user.sub (authId) to fetch user bio
-          console.log(User);
-          setBio(User.bio);
-          setUserData(User.profile_Picture);
-          console.log("PP "+User.profile_Picture);
-        } catch (error) {
-          console.error('Error fetching user bio:', error);
-        }
-      };
-      fetchUser();
+  const handleDeleteProfile = async () => {
+    try {
+      const token = await getAccessTokenSilently();
+      const userProfile = await getUserProfileByAuthId(user.sub, token);
+      if (userProfile && userProfile.auth0Id) {
+        await deleteUserProfile(userProfile.auth0Id, token);
+        console.log('User deleted successfully.');
+      } else {
+        console.error('User profile not found or missing Auth0Id.');
+      }
+    } catch (error) {
+      console.error('Error deleting user profile:', error);
     }
-  }, [isAuthenticated, user]);
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Container fluid className="vh-100">
@@ -78,16 +113,15 @@ function Profile() {
       <Row className="h-100">
         <Col>EXTRA</Col>
         <Col xs={12} md={4} className="PostFeed h-100">
-          POSTS
+          <PostMediaFlow />
         </Col>
         <Col>
-        <br />
-        {userData && (
-        <img className='ProfilePic' src={userData} alt="Profile Picture" />
-           )}
-          <UserProfile />
-        
-           <br />
+          <br />
+          {userData && (
+            <img className='ProfilePic' src={userData} alt="Profile Picture" />
+          )}
+          <h2>{username}</h2>
+          <p>{email}</p>
           {isAuthenticated && (
             <Button variant="primary" onClick={handleEditProfile}>
               <i className="fas fa-pencil-alt"></i> Edit Profile
@@ -95,29 +129,44 @@ function Profile() {
           )}
           <h1>Bio</h1>
           <p>{bio}</p>
+          {isAuthenticated && (
+            <Button variant="danger" onClick={handleDeleteProfile}>
+              <i className="fas fa-trash-alt"></i> Delete Profile
+            </Button>
+          )}
         </Col>
       </Row>
-      {/* Edit Profile Modal */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Profile</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <label htmlFor="newBio">New Bio:</label>
-          <input
-            type="text"
-            id="newBio"
-            value={newBio}
-            onChange={(e) => setNewBio(e.target.value)}
-          />
-          <br />
-          <label htmlFor="newUsername">New Username:</label>
-          <input
-            type="text"
-            id="newUsername"
-            value={newUsername}
-            onChange={(e) => setNewUsername(e.target.value)}
-          />
+          <Form>
+            <Form.Group controlId="newBio">
+              <Form.Label>New Bio:</Form.Label>
+              <Form.Control
+                type="text"
+                value={newBio}
+                onChange={(e) => setNewBio(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group controlId="newUsername">
+              <Form.Label>New Username:</Form.Label>
+              <Form.Control
+                type="text"
+                value={newUsername}
+                onChange={(e) => setNewUsername(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group controlId="newEmail">
+              <Form.Label>New Email:</Form.Label>
+              <Form.Control
+                type="email"
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
@@ -130,6 +179,6 @@ function Profile() {
       </Modal>
     </Container>
   );
-}
+};
 
-export default Profile;
+export default ProfilePage;

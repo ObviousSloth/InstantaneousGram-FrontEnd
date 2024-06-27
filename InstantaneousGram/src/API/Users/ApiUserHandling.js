@@ -1,7 +1,7 @@
 
 // api.js
 
-const BASE_URL = process.env.REACT_APP_BACKEND_DOCKER_URL;
+const BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
 async function getUsers() {
   const response = await fetch(`${BASE_URL}/api/Users`);
