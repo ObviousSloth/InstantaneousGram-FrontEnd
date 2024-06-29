@@ -1,29 +1,28 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar.js';
-import LoginButton from '../components/Login.js';
-import LogoutButton from '../components/LogOut.js';
-import UserProfileButton from '../components/UserProfile.js'
-import Button from 'react-bootstrap/esm/Button.js';
-import Container from 'react-bootstrap/esm/Container.js';
-import Card from 'react-bootstrap/esm/Card.js';
-import Col from 'react-bootstrap/esm/Col.js';
-import Row from 'react-bootstrap/esm/Row.js';
-import SideBar from '../components/SideBar.js';
-import FileUploadForm from '../components/FileUploadForm.js';
-import PostList from '../components/PostList.js';
+// Home.js
 
+import React, { useState } from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
+import Navbar from '../components/Navbar.js';
+import SideBar from '../components/SideBar.js';
+import PostList from '../components/PostList.js';
+import TermsOfService from '../components/TermsOfService.js';
 import '../Styling/Styling.scss';
 
 const Home = () => {
   const [showForm, setShowForm] = useState(false);
+  const [showTerms, setShowTerms] = useState(true);
 
   const handleButtonClick = () => {
     setShowForm(!showForm); // Toggle the state
   };
 
+  const handleTermsAccepted = () => {
+    setShowTerms(false);
+  };
+
   return (
     <Container fluid className="vh-100">
+      <TermsOfService show={showTerms} onAccept={handleTermsAccepted} />
       <SideBar />
       <Navbar />
       <Row className="h-100">
